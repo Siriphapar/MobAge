@@ -1,0 +1,31 @@
+name: MobAge
+main: me.acuddlyheadcrab.MobAge.MobAge
+author: "acuddlyheadcrab"
+version: 2.2_1
+startup: postworld
+permissions:
+    mobage.*:
+        description: Gives access to all MobAge commands
+        children:
+            mobage.reload: true
+            mobage.config: true
+    mobage.reload:
+        description: Gives access to reload MobAge
+        default: op
+    mobage.config:
+        description: Gives access to MobAge's config commands
+        default: op
+commands:
+    mobage:
+        description: "Displays help messages for MobAge"
+        usage: /<command> <reload/config> [config key] [value]
+        aliases: [mb]
+description: >
+             MobAge is a plugin that reduces the amount of stray/idle mobs around each world.
+             
+#			This plugin uses the BSD liscense.
+#			So if you want to modify and publish this, just PM me
+#			and don't claim it as your own.
+#
+#			Other than that, I don't really care XD
+#  For the text of the license, go to http://pastebin.com/StwgQBUJ

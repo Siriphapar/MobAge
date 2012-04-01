@@ -1,0 +1,81 @@
+# How the Whitelist works:
+# Mob:
+#     - true (CAN spawn)
+#     - true (DOES age) (removed when it reaches the age limit)
+# OtherMob:
+#     - false (CANNOT spawn)
+#     - false (DOES NOT age) (isn't removed even after it reaches the limit)
+
+Whitelist:
+  Enabled: false
+  Monsters:
+    Blaze:
+    - true
+    - true
+    CaveSpider:
+    - true
+    - true
+    Creeper:
+    - true
+    - true
+    Enderman:
+    - true
+    - true
+    Ghast:
+    - true
+    - true
+    Giant:
+    - true
+    - true
+    MagmaCube:
+    - true
+    - true
+    Monster:
+    - true
+    - true
+    PigZombie:
+    - true
+    - true
+    SilverFish:
+    - true
+    - true
+    Skeleton:
+    - true
+    - true
+    Spider:
+    - true
+    - true
+    Zombie:
+    - true
+    - true
+  Animals:
+    Chicken:
+    - true
+    - true
+    Cow:
+    - true
+    - true
+    Mooshroom:
+    - true
+    - true
+    Ocelot:
+    - true
+    - true
+    Pig:
+    - true
+    - true
+    Sheep:
+    - true
+    - true
+    Slime:
+    - true
+    - true
+    Squid:
+    - true
+    - true
+    Villager:
+    - true
+    - true
+    Wolf:
+    - true
+    - true
