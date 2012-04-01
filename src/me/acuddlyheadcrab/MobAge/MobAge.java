@@ -51,15 +51,14 @@ public class MobAge extends JavaPlugin {
 	private File whitelistConfigurationFile = null;
 	public static PluginDescriptionFile pdf;
 	
-	public final MobAgeEL entityListener = new MobAgeEL(this);
-	public final MobAgePL playerListener = new MobAgePL(this);
+	public final MobListener entityListener = new MobListener(this);
 	public final PluginIO sendPluginInfo = new PluginIO(this);
 	
 // -------------------- MAIN METHODS START --------------------
 	
+	@Override
 	public void onEnable() {
     	getServer().getPluginManager().registerEvents(entityListener, this);
-    	getServer().getPluginManager().registerEvents(playerListener, this);
     	loadConfig();
     	loadWhitelist();
     	saveWhitelist();
@@ -68,7 +67,8 @@ public class MobAge extends JavaPlugin {
     	final List<World> wlist = Bukkit.getServer().getWorlds();
     	int delay = config.getInt("Age_Check_delay");
 		try{
-			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {public void run() {
+			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {@Override
+			public void run() {
 				killOldMobs(wlist);
 			}}, 10L, delay) ;
 		}catch(IllegalAccessError e){PluginIO.sendPluginInfo("Illegal Access Error");plugin.setEnabled(false); return;}
@@ -77,6 +77,7 @@ public class MobAge extends JavaPlugin {
     	PluginIO.sendPluginInfo("v"+this.getDescription().getVersion()+" - by acuddlyheadcrab - is enabled");
 	}
 	
+	@Override
 	public void onDisable() {
 		this.getServer().getScheduler().cancelTasks(this);
 		PluginIO.sendPluginInfo("is now disabled :(");
@@ -227,6 +228,7 @@ public class MobAge extends JavaPlugin {
 		return returnable;
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender cmdsndr, Command cmd, String commandLabel, String[] args){
 		boolean cmd1 = cmd.getName().equalsIgnoreCase("mobage");
 		if(cmd1){	
@@ -324,11 +326,6 @@ public class MobAge extends JavaPlugin {
 						}
 					} else PluginIO.displayHelp(cmdsndr, "setconfig"); return false;
 				}
-				
-				
-				
-				
-				
 			} else 
 				PluginIO.displayHelp(cmdsndr, "help");
 			return true;

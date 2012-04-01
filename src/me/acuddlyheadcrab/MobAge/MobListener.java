@@ -40,12 +40,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.yaml.snakeyaml.error.YAMLException;
 
 
-public class MobAgeEL implements Listener{
+public class MobListener implements Listener{
 	public static MobAge plugin;
-	public MobAgeEL(MobAge instance){plugin = instance;}
+	public MobListener(MobAge instance){plugin = instance;}
 	public static boolean eventDebug = false;
 	
 //	ENTITY EVENT HANDLERS	
@@ -53,22 +54,22 @@ public class MobAgeEL implements Listener{
 	public void onEntityDamage(EntityDamageEvent event){
 		resetAge(event.getEntity(), "damage event");
 		if(eventDebug)System.out.println("dmg");
-		}
+	}
 	@EventHandler
 	public void onEntityInteract(EntityInteractEvent event){
 		resetAge(event.getEntity(), "interact event");
 		if(eventDebug)System.out.println("interact");
-		}
+	}
 	@EventHandler
 	public void onEntityTarget(EntityTargetEvent event){
 		resetAge(event.getEntity(), "target event");
 		if(eventDebug)System.out.println("target");
-		}	
+	}	
 	@EventHandler
 	public void onEntityTame(EntityTameEvent event){
 		resetAge(event.getEntity(), "tame event");
 		if(eventDebug)System.out.println("tame");
-		}
+	}
 //	ENTITY EVENT HANDLERS (END)
 	
 	@EventHandler
@@ -92,9 +93,6 @@ public class MobAgeEL implements Listener{
 		
 		
 		if(!inhabited(event.getLocation())){
-			if(MobAge.config.getBoolean("Debug_for_spawning")){
-				System.out.println("Spawn cancelled due to uninhabited area (Radius: "+MobAge.config.getInt("Active_Radius"));
-			}
 			event.setCancelled(true);
 			return;
 		}
@@ -114,26 +112,52 @@ public class MobAgeEL implements Listener{
 		
 	}
 	
+
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event){
+		
+		if(MobListener.eventDebug){System.out.println("dmg");}
+		
+		Entity[] ent_ar = event.getTo().getBlock().getChunk().getEntities();
+		
+		
+		
+		for(int c=0;c<ent_ar.length;c++){
+			Entity ent = ent_ar[c];
+			
+			if (!(ent instanceof Player)){
+				resetAge(ent, "PlayerMoveEvent");
+			}
+			
+			
+		}
+		
+	}
+	
 	private boolean inhabited(Location loc) {
 		Player[] playarr = Bukkit.getOnlinePlayers();
+		double dist = 0;
 		int rad = 5;
+		
+		
 		try{
 			rad = MobAge.config.getInt("Active_Radius");
 		}catch(YAMLException e){PluginIO.sendPluginInfo("Exception in YML key: \"Active Radius:\""); return false;}
 		
+		
 		for(int c=0;c<playarr.length;c++){
 			Location ploc = playarr[c].getLocation();
-			double dist = 0;
 			try{
 				dist = ploc.distance(loc);
-			}catch(IllegalArgumentException e){return false;}
-			
-			
+			}catch(IllegalArgumentException e){
+				return false;
+			}
 			if(dist<=rad){return true;}
 		}
 		
 		if(MobAge.config.getBoolean("Debug_for_spawning")){
-			PluginIO.sendPluginInfo("A location was deemed inactive, and spawn cancelled ("+rad+")");
+			PluginIO.sendPluginInfo("A location was deemed inactive, and spawn cancelled ("+(int) dist+"!<"+rad+")");
 		}
 		
 		return false;
