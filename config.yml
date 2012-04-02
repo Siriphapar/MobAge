@@ -1,22 +1,24 @@
-# How the config for MobAge works:
-# ...
 # IMPORTANT:
-# The time format will be in server ticks, to give more customization.
-# 20 ticks = 1 second. It's actually quite simple
+# The time format is NOT in ticks anymore. 
+# It's now in double format, which means it can store decimal numbers, of seconds. 
 # ...
 # HOW TO USE:
-# "Age check delay": This is how often the plugin should check for 'old' mobs to kill. 
+# "Age check delay": 
+#       This is how often the plugin should check for 'old' mobs to kill.
 #       Be cautious with this. Small changes...
-# "Age limit": This is limit of age (in ticks) that a mob can have. 
+# "Age limit": 
+#       This is limit of age (in seconds) that a mob can have. 
 #       Remember that their age is reset via a number of ways
-# "Mob limit": How many mobs are allowed. 0 means no limit
-# "Active radius": This is the radius (in blocks) around each player that is considered "inhabited".
-# ^ Did I forget any mobs? Contact me via bukkit forums please :)
+# "Mob limit": 
+#       How many mobs are allowed. 0 means no limit
+# "Active radius": 
+#       This is the radius (in blocks) around each player that is considered "inhabited".
 
-Age_Check_delay: 10
-AgeLimit: 900
+Age_Check_delay: 0.5
+AgeLimit: 45
 MobLimit: 100
 Active_Radius: 50
-Debug_onStartup: true
-Debug_show_whitelist: false
-Debug_for_spawning: false
+Debug:
+    onStartup: true
+    showWhitelist: false
+    onSpawning: false

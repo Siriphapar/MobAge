@@ -55,6 +55,9 @@ Whitelist:
     Cow:
     - true
     - true
+    IronGolem:
+    - true
+    - true
     Mooshroom:
     - true
     - true
