@@ -14,9 +14,9 @@
 # "Active radius": 
 #       This is the radius (in blocks) around each player that is considered "inhabited".
 
-Age_Check_delay: 0.5
+Age_Check_Delay: 0.5
 AgeLimit: 45
-MobLimit: 100
+MobLimit: 50
 Active_Radius: 50
 Debug:
     onStartup: true

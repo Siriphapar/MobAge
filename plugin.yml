@@ -1,7 +1,7 @@
 name: MobAge
 main: me.acuddlyheadcrab.MobAge.MobAge
 author: "acuddlyheadcrab"
-version: 2.2.2
+version: 2.2.4
 startup: postworld
 permissions:
     mobage.*:

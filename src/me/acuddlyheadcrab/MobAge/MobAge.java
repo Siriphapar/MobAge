@@ -98,7 +98,6 @@ public class MobAge extends JavaPlugin {
     }
 
     public static void killOldMobs(List<World> wlist){
-        
         for(int c=0;c<wlist.size();c++){
             World cur_world = wlist.get(c);
             List<Entity> entlist = cur_world.getEntities();
@@ -125,111 +124,165 @@ public class MobAge extends JavaPlugin {
     
 //    TODO: Fix/tidy up commands
     @Override
-    public boolean onCommand(CommandSender cmdsndr, Command cmd, String commandLabel, String[] args){
-        boolean cmd1 = cmd.getName().equalsIgnoreCase("mobage");
-        if(cmd1){    
-            if(!(args.length<1)){
-                boolean isplayer = cmdsndr instanceof Player;
-                if(args[0].equalsIgnoreCase("help")){
-                    PluginIO.displayHelp(cmdsndr, "help"); return true;
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+        
+        boolean 
+            mobage_ = cmd.getName().equalsIgnoreCase("mobage")
+        ;
+        
+        String
+            perm_mobage_reload = "mobage.reload",
+            perm_mobage_config = "mobage.config",
+            perm_mobage_setconfig = "mobage.setconfig"
+        ;
+        
+        if(mobage_){ 
+            
+            try{
+                String arg1 = args[0];
+                
+                boolean
+                    _help = arg1.equalsIgnoreCase("help"),
+                    _reload = arg1.equalsIgnoreCase("reload"),
+                    _config = arg1.equalsIgnoreCase("config")||arg1.equalsIgnoreCase("cfg"),
+                    _setconfig = arg1.equalsIgnoreCase("setconfig")||arg1.equalsIgnoreCase("setcfg")
+                ;
+                
+                if(_help){
+                    PluginIO.displayHelp(sender, "help"); return true;
                 }
                 
-                if(args[0].equalsIgnoreCase("reload")){
-                    if(isplayer&&(!(cmdsndr.hasPermission("mobage.reload")))){
-                        cmdsndr.sendMessage("You must have permission of be OP to do this");
-                    } else
-                    loadConfig();
-                    cmdsndr.sendMessage(ChatColor.GOLD+"Reloaded");
-                    PluginIO.sendPluginInfo("Reloaded by "+cmdsndr.getName());
+                if(_reload){
+                    if(sender.hasPermission(perm_mobage_reload)){
+                        saveConfig();
+                        saveWhitelist();
+                        loadConfig();
+                        loadWhitelist();
+                        sender.sendMessage(ChatColor.GOLD+"Reloaded");
+                        PluginIO.sendPluginInfo("Reloaded by "+sender.getName());
+                    } else sender.sendMessage("You must have permission to do this"); return true;
                 }
                 
-                if(args[0].equalsIgnoreCase("config")){
-                    if(isplayer&&(!(cmdsndr.hasPermission("mobage.config")))){
-                        cmdsndr.sendMessage("You must have permission of be OP to do this");
-                    } else
-                    if(args.length==1){
-                        PluginIO.displayHelp(cmdsndr, "config"); return true;
-                    }
-                    
+                if(_config){
+                    if(sender.hasPermission(perm_mobage_config)){
+                        PluginIO.displayHelp(sender, "config"); 
+                        return true;
+                    } else sender.sendMessage(ChatColor.RED+"You must have permission to do this"); return true;
                 }
                 
-                if(args[0].equalsIgnoreCase("setconfig")){
-                    if(isplayer&&(!(cmdsndr.hasPermission("mobage.config")))){
-                        cmdsndr.sendMessage("You must have permission of be OP to do this");
-                    } else
-                    if(args.length==1){
-                        PluginIO.displayHelp(cmdsndr, "setconfig"); return true;
-                    }
-                    
-                    String arg1 = args[1]; String newv = "null";
-                    int arg2 = 0;
-                    
-                    if(arg1.equalsIgnoreCase("age_check_delay")){
-                        try{arg2 = Integer.parseInt(args[2]);}
-                        catch (NumberFormatException e){
-                            cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as a valid number!"); return false;
-                        }
-                        config.set("Age_Check_delay", arg2);
-                        newv = config.getString("Age_Check_Delay");
-                        cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"Age_check_delay\" with the value: "+ChatColor.GRAY+newv); loadConfig();
+                if(_setconfig){
+                    if(sender.hasPermission(perm_mobage_setconfig)){
+                        try{
+                            String arg2 = args[1];
+                            String newv = "";
+                            
+                            boolean
+                                _age_check_delay = arg2.equalsIgnoreCase("age_check_delay"),
+                                _age_limit = arg2.equalsIgnoreCase("age_limit"),
+                                _mob_limit = arg2.equalsIgnoreCase("mob_limit"),
+                                _active_radius = arg2.equalsIgnoreCase("active_radius"),
+                                _debug = arg2.equalsIgnoreCase("debug"),
+                                _whitelist = arg2.equalsIgnoreCase("whitelist")
+                            ;
+                            
+                            try{
+                                String arg3 = args[2];
+                                
+                                if(_age_check_delay){
+                                    try{
+                                        config.set("Age_Check_delay", Double.parseDouble(arg3));
+                                        newv = config.getString("Age_Check_Delay");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Age_check_delay\" with the value: "+ChatColor.GRAY+newv); 
+                                        saveConfig(); loadConfig();
+                                        return true;
+                                    }
+                                    catch (NumberFormatException e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        return true;
+                                    }
+                                }
+                                
+                                if(_age_limit){
+                                    try{
+                                        config.set("AgeLimit", Double.parseDouble(arg3));
+                                        newv = config.getString("AgeLimit");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"AgeLimit\" with the value: "+ChatColor.GRAY+newv); 
+                                        saveConfig(); loadConfig();
+                                        return true;
+                                    }
+                                    catch (NumberFormatException e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        return true;
+                                    }
+                                }
+                                
+                                if(_mob_limit){
+                                    try{
+                                        config.set("MobLimit", Double.parseDouble(arg3));
+                                        newv = config.getString("MobLimit");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"MobLimit\" with the value: "+ChatColor.GRAY+newv); 
+                                        saveConfig(); loadConfig();
+                                        return true;
+                                    }
+                                    catch (NumberFormatException e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        return true;
+                                    }
+                                }
+                                
+                                if(_active_radius){
+                                    try{
+                                        config.set("Active_Radius", Double.parseDouble(arg3));
+                                        newv = config.getString("Active_Radius");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Active_Radius\" with the value: "+ChatColor.GRAY+newv); 
+                                        saveConfig(); loadConfig();
+                                        return true;
+                                    }
+                                    catch (NumberFormatException e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        return true;
+                                    }
+                                }
+                                
+                                if(_debug){
+                                    try{
+                                        config.set("Debug.onSpawn", Boolean.parseBoolean(arg3));
+                                        newv = config.getString("Debug.onSpawn");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Debug.onSpawn\" with the value: "+ChatColor.GRAY+newv); 
+                                        saveConfig(); loadConfig();
+                                        return true;
+                                    }
+                                    catch (Exception e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be parsed as a valid argument!");
+                                        return true;
+                                    }
+                                }
+                                
+                                if(_whitelist){
+                                    try{
+                                        whitelist.set("Whitelist.Enabled", Boolean.parseBoolean(arg3));
+                                        newv = whitelist.getString("Whitelist.Enabled");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Whitelist.Enabled\" with the value: "+ChatColor.GRAY+newv);
+                                        saveWhitelist(); loadWhitelist();
+                                        return true;
+                                    }
+                                    catch (Exception e){
+                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be parsed as a valid argument!");
+                                        return true;
+                                    }
+                                }
+                                
+                            }catch(IndexOutOfBoundsException e){}
+                        }catch (IndexOutOfBoundsException e) {}
+                        PluginIO.displayHelp(sender, "setconfig");
                         return true;
-                    } else if(arg1.equalsIgnoreCase("age_limit")){
-                        try{arg2 = Integer.parseInt(args[2]);}
-                        catch (NumberFormatException e){
-                            cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as a valid number!"); return false;
-                        }
-                        config.set("AgeLimit", arg2);
-                        newv = config.getString("AgeLimit");
-                        cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"AgeLimit\" with the value: "+ChatColor.GRAY+newv); loadConfig();
-                        return true;
-                    } else if(arg1.equalsIgnoreCase("mob_limit")){
-                        try{arg2 = Integer.parseInt(args[2]);}
-                        catch (NumberFormatException e){
-                            cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as a valid number!"); return false;
-                        }
-                        config.set("MobLimit", arg2);
-                        newv = config.getString("MobLimit");
-                        cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"MobLimit\" with the value: "+ChatColor.GRAY+newv); loadConfig();
-                        return true;
-                    } else if(arg1.equalsIgnoreCase("active_radius")){
-                        try{arg2 = Integer.parseInt(args[2]);}
-                        catch (NumberFormatException e){
-                            cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as a valid number!"); return false;
-                        }
-                        config.set("Active_Radius", arg2);
-                        newv = config.getString("Active_Radius");
-                        cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"Active_Radius\" with the value: "+ChatColor.GRAY+newv); loadConfig();
-                        return true;
-                    } else if(arg1.equalsIgnoreCase("debug")){
-                        boolean t = args[2].equalsIgnoreCase("true");
-                        boolean f = args[2].equalsIgnoreCase("false");
-                        if(!(t||f)){cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as true/false!"); return false;} else {
-                            boolean barg2 = Boolean.parseBoolean(args[2]);
-                            config.set("Debug_onStartup", barg2); config.set("Debug_for_spawning", barg2);
-                            newv = config.getString("Debug_for_spawning");
-                            cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"Debug\" with the value: "+ChatColor.GRAY+newv); loadConfig();
-                            return true;
-                        }
-                    } else if(arg1.equalsIgnoreCase("whitelist")){
-                        boolean t = args[2].equalsIgnoreCase("true");
-                        boolean f = args[2].equalsIgnoreCase("false");
-                        if(!(t||f)){cmdsndr.sendMessage(ChatColor.RED+"\""+args[2]+"\" could not be recognized as true/false!"); return false;} else {
-                            boolean barg2 = Boolean.parseBoolean(args[2]);
-                            config.set("Whitelist", barg2);
-                            newv = config.getString("Whitelist");
-                            cmdsndr.sendMessage(ChatColor.GOLD+"Set key \"Whitelist\" with the value: "+ChatColor.GRAY+newv); loadConfig();
-                            return true;
-                        }
-                    } else PluginIO.displayHelp(cmdsndr, "setconfig"); return false;
+                    } else sender.sendMessage(ChatColor.RED+"You must have permission to do this"); return true;
                 }
-            } else 
-                PluginIO.displayHelp(cmdsndr, "help");
-            return true;
+            }catch(IndexOutOfBoundsException e){}
+            PluginIO.displayHelp(sender, "help");
         }
         
-        
-        return false;
+        return true;
     }
-
     
 }

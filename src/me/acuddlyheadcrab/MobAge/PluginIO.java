@@ -105,12 +105,12 @@ public class PluginIO{
     		cmdsndr.sendMessage(gray+"  Mob limit: "+config.getInt("MobLimit"));
     		cmdsndr.sendMessage(gray+"  Active radius: "+config.getInt("Active_Radius"));
     		cmdsndr.sendMessage(gray+"  Whitelist enabled: "+whitelist.getBoolean("Whitelist.Enabled"));
-    		cmdsndr.sendMessage(gray+"  Debug: "+config.getBoolean("Debug_onStartup"));
+    		cmdsndr.sendMessage(gray+"  Debug(spawn): "+config.getBoolean("Debug_onSpawn"));
 		}
 		if(option=="setconfig"){
 			cmdsndr.sendMessage(gold+"How to edit MobAge config :");
-			cmdsndr.sendMessage(gray+"  /mobage setconfig age_check_delay "+dgray+"<default: 10>");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig age_limit "+dgray+"<default: 900>");
+			cmdsndr.sendMessage(gray+"  /mobage setconfig age_check_delay "+dgray+"<default: 0.5>");
+    		cmdsndr.sendMessage(gray+"  /mobage setconfig age_limit "+dgray+"<default: 45>");
     		cmdsndr.sendMessage(gray+"  /mobage setconfig mob_limit "+dgray+"<default: 50>");
     		cmdsndr.sendMessage(gray+"  /mobage setconfig active radius "+dgray+"<default: 50>");
     		cmdsndr.sendMessage(gray+"  /mobage setconfig debug "+dgray+"true/false");
@@ -126,7 +126,7 @@ public class PluginIO{
 	
    public static boolean getWhiteListVal(Entity ent, String type){
         String monster = "Monsters", animal = "Animals";
-        switch (ent.getEntityId()) {
+        switch (ent.getType().getTypeId()) {
             case 50: return getWLKey(monster, "Creeper", type);
             case 51: return getWLKey(monster, "Skeleton", type);
             case 52: return getWLKey(monster, "Spider", type);
