@@ -147,7 +147,7 @@ public class PluginIO{
             case 93: return getWLKey(animal, "Chicken", type);
             case 94: return getWLKey(animal, "Squid", type);
             case 95: return getWLKey(animal, "Wolf", type);
-            case 96: return getWLKey(animal, "MushroomCow", type);
+            case 96: return getWLKey(animal, "Mooshroom", type);
             case 97: return false; //Snow Golem
             case 98: return getWLKey(animal, "Ocelot", type);
             case 99: return getWLKey(animal, "IronGolem", type);

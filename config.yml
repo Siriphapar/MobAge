@@ -21,4 +21,4 @@ Active_Radius: 50
 Debug:
     onStartup: true
     showWhitelist: false
-    onSpawning: false
+    onSpawn: false

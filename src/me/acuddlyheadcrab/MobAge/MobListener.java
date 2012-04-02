@@ -2,12 +2,12 @@ package me.acuddlyheadcrab.MobAge;
 
 import java.util.List;
 
-import org.bukkit.craftbukkit.entity.CraftSnowman;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -53,38 +53,37 @@ public class MobListener implements Listener{
 		List<LivingEntity> l_entlist = event.getEntity().getWorld().getLivingEntities();
 		
 		for(int c=0;c<l_entlist.size();c++){
-			boolean remove = (l_entlist.get(c) instanceof Player)||(l_entlist.get(c) instanceof CraftSnowman);			
+		    LivingEntity ent = l_entlist.get(c);
+			boolean remove = (ent instanceof Player)||(ent instanceof Tameable);			
 			if(remove){l_entlist.remove(c);}
 		}
 		
 		int moblimit = MobAge.config.getInt("MobLimit");
-		if((moblimit!=0)&&(l_entlist.size()>=moblimit)){
+		
+		boolean
+		    overMoblimit = (moblimit!=0)&&(l_entlist.size()>=moblimit),
+		    notInhab = !inhabited(event.getLocation()),
+		    whitelist = MobAge.whitelist.getBoolean("Whitelist.Enabled"),
+		    noSpawn = whitelist&&!PluginIO.getWhiteListVal(event.getEntity(), "spawn")
+	    ;
+		
+		if(overMoblimit){
 			if(MobAge.config.getBoolean("Debug.onSpawn")){
-				System.out.println("Spawn cancelled due to mob limit ("+l_entlist.size()+"), (Limit: "+moblimit);
+				PluginIO.sendPluginInfo("Spawn cancelled due to mob limit ("+l_entlist.size()+"), (Limit: "+moblimit);
 			}
 			event.setCancelled(true);
-			return;
-		} else
+		}
 		
-		
-		if(!inhabited(event.getLocation())){
+		if(notInhab){
 			event.setCancelled(true);
-			return;
 		}
 		
-		boolean whitelist = false;
-		try{
-			whitelist = MobAge.whitelist.getBoolean("Whitelist.Enabled");
-		} catch (YAMLException e){PluginIO.sendPluginInfo("YML error in key: \"Whitelist.Enabled\""); return;}
-		if(whitelist){
-			if(!PluginIO.getWhiteListVal(event.getEntity(), "spawn")){
-				if(MobAge.config.getBoolean("Debug.onSpawn")){
-					PluginIO.sendPluginInfo(event.getEntity()+" is not on the whitelist!");
-				}
-				event.setCancelled(true); return;
+		if(noSpawn){
+			if(MobAge.config.getBoolean("Debug.onSpawn")){
+				PluginIO.sendPluginInfo(event.getEntity()+" is not on the whitelist!");
 			}
+			event.setCancelled(true);
 		}
-		
 	}
 	
 
