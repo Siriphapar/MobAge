@@ -127,7 +127,8 @@ public class MobAge extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
         
         boolean 
-            mobage_ = cmd.getName().equalsIgnoreCase("mobage")
+            mobage_ = cmd.getName().equalsIgnoreCase("mobage"),
+            mbwhitelist_ = cmd.getName().equalsIgnoreCase("mbwhitelist")
         ;
         
         String
@@ -282,7 +283,98 @@ public class MobAge extends JavaPlugin {
             PluginIO.displayHelp(sender, "help");
         }
         
+        if(mbwhitelist){
+            try{
+                String arg1 = args[0];
+                String 
+                    path = "",
+                    
+                ;
+                
+                boolean
+                    age = arg1.equalsIgnoreCase("age"),
+                    spawn = arg1.equalsIgnoreCase("spawn")
+                ;
+                
+                try{
+                    
+                    String 
+                        arg2 = args[1],
+                        path = getWhitelistEntPath(arg2)
+                    ;
+                    
+                    if(path!=null){
+                        try{
+                            String arg3 = args[2];
+                            
+                            if(age)setEntDoesAge(path);
+                            if(spawn)setEntDoesAge(path);
+                            
+                        }catch(IndexOutOfBoundsException e){
+                            sender.sendMessage(ChatColor.RED+"/mbwhitelist <age|spawn> <entityname> [true/false]")
+                        }
+                    } else sender.sendMessage(ChatColor.RED+"Could not find the path \""+arg2+"\"");
+                }catch(IndexOutOfBoundsException e){
+                    
+                }
+            }catch(IndexOutOfBoundsException e){
+                
+            }
+        }
+        
         return true;
+    }
+    
+    public void setEntCanSpawn(String path, boolean spawn){
+        List<Boolean> bool_list = whitelist.getBooleanList(path);
+        bool_list.set(0, spawn);
+        whitelist.set(path, bool_list);
+    }
+    
+    public void setEntDoesAge(String path, boolean spawn){
+        List<Boolean> bool_list = whitelist.getBooleanList(path);
+        bool_list.set(1, spawn);
+        whitelist.set(path, bool_list);
+    }
+    
+    public void setWhitelist(String path, Object newvalue){
+        whitelist.set(path, newvalue);
+        saveWhitelist();
+        loadWhitelist();
+    }
+    
+    public void setConfigVal(String path, boolean newvalue){
+        config.set(path, newvalue);
+        saveConfig();
+        loadconfig();
+    }
+    
+    public String getWhitelistEntPath(String entityname){
+        if(entityname.equalsIgnoreCase("blaze")) return "Whitelist.Animal.Blaze";
+        if(entityname.equalsIgnoreCase("cavespider")) return "Whitelist.Animal.CaveSpider";
+        if(entityname.equalsIgnoreCase("creeper")) return "Whitelist.Animal.Creeper";
+        if(entityname.equalsIgnoreCase("enderman")) return "Whitelist.Animal.Enderman";
+        if(entityname.equalsIgnoreCase("ghast")) return "Whitelist.Animal.Ghast";
+        if(entityname.equalsIgnoreCase("giant")) return "Whitelist.Animal.Giant";
+        if(entityname.equalsIgnoreCase("magmacube")) return "Whitelist.Animal.MagmaCube";
+        if(entityname.equalsIgnoreCase("monster")) return "Whitelist.Animal.Monster";
+        if(entityname.equalsIgnoreCase("pigzombie")) return "Whitelist.Animal.PigZombie";
+        if(entityname.equalsIgnoreCase("silverfish")) return "Whitelist.Animal.SilverFish";
+        if(entityname.equalsIgnoreCase("skeleton")) return "Whitelist.Animal.Skeleton";
+        if(entityname.equalsIgnoreCase("spider")) return "Whitelist.Animal.Spider";
+        if(entityname.equalsIgnoreCase("zombie")) return "Whitelist.Animal.Zombie";
+        if(entityname.equalsIgnoreCase("chicken")) return "Whitelist.Animal.Chicken";
+        if(entityname.equalsIgnoreCase("cow")) return "Whitelist.Animal.Cow";
+        if(entityname.equalsIgnoreCase("irongolem")) return "Whitelist.Animal.IronGolem";
+        if(entityname.equalsIgnoreCase("mooshroom")) return "Whitelist.Animal.MooShroom";
+        if(entityname.equalsIgnoreCase("ocelot")) return "Whitelist.Animal.Ocelot";
+        if(entityname.equalsIgnoreCase("pig")) return "Whitelist.Animal.Pig";
+        if(entityname.equalsIgnoreCase("sheep")) return "Whitelist.Animal.Sheep";
+        if(entityname.equalsIgnoreCase("slime")) return "Whitelist.Animal.Slime";
+        if(entityname.equalsIgnoreCase("squid")) return "Whitelist.Animal.Squid";
+        if(entityname.equalsIgnoreCase("villager")) return "Whitelist.Animal.Villager";
+        if(entityname.equalsIgnoreCase("wolf")) return "Whitelist.Animal.Wolf";
+        return null;
     }
     
 }
