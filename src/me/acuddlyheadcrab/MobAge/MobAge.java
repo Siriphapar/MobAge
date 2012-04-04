@@ -6,18 +6,13 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +26,7 @@ public class MobAge extends JavaPlugin {
     
     public final MobListener entityListener = new MobListener(this);
     public final PluginIO sendPluginInfo = new PluginIO(this);
+    public final KillOldMobs killOldMobstask = new KillOldMobs(this);
     
 // -------------------- MAIN METHODS START --------------------
     
@@ -43,16 +39,14 @@ public class MobAge extends JavaPlugin {
         saveWhitelist();
         if(config.getBoolean("Debug.onStartup")) PluginIO.debugStartup();
         
-        final List<World> wlist = Bukkit.getServer().getWorlds();
         long delay = PluginIO.toTicks(config.getDouble("Age_Check_delay"));
         try{
-            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    killOldMobs(wlist);
-                }
-            }, 10L, delay);
-        }catch(IllegalAccessError e){PluginIO.sendPluginInfo("Illegal Access Error");plugin.setEnabled(false); return;}
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, killOldMobstask, 10L, delay);
+        }catch(IllegalAccessError e){
+            PluginIO.sendPluginInfo("Illegal Access Error");
+            plugin.setEnabled(false);
+            return;
+        }
     }
     
     @Override
@@ -95,35 +89,6 @@ public class MobAge extends JavaPlugin {
             whitelist.save(whitelistConfigurationFile);
         } catch (IOException ex) {
             PluginIO.sendPluginInfo("Could not save config to " + whitelistConfigurationFile.getName() + ex);
-        }
-    }
-
-    public static void killOldMobs(List<World> wlist){
-        for(int c=0;c<wlist.size();c++){
-            World cur_world = wlist.get(c);
-            List<Entity> entlist = cur_world.getEntities();
-            
-            for(int c2=0;c2<entlist.size();c2++){
-                
-                Entity ent = entlist.get(c2);
-                
-                boolean 
-                    player = (ent instanceof Player),
-                    living = (ent instanceof LivingEntity),
-                    tamed = ent instanceof Tameable ? ((Tameable) ent).isTamed() : false,
-                    active = MobListener.inhabited(ent.getLocation(), null),
-                    
-                    canKill = !player&&!tamed&&living&&active
-                ;
-                
-                if(canKill){
-                    if(PluginIO.getWhiteListVal(ent, "age")){
-                        if(ent.getTicksLived()>=config.getInt("AgeLimit")){
-                            ent.remove();
-                        }    
-                    }
-                }
-            }
         }
     }
     
