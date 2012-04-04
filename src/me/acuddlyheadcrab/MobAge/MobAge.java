@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -106,12 +107,16 @@ public class MobAge extends JavaPlugin {
                 
                 Entity ent = entlist.get(c2);
                 
-                boolean player = (ent instanceof Player);
-                boolean living = (ent instanceof LivingEntity);
-                boolean tamed = false; if(ent instanceof Tameable){tamed = ((Tameable) ent).isTamed();}
-                
-                if(!player&&living&&!tamed){
+                boolean 
+                    player = (ent instanceof Player),
+                    living = (ent instanceof LivingEntity),
+                    tamed = ent instanceof Tameable ? ((Tameable) ent).isTamed() : false,
+                    active = MobListener.inhabited(ent.getLocation(), null),
                     
+                    canKill = !player&&!tamed&&living&&active
+                ;
+                
+                if(canKill){
                     if(PluginIO.getWhiteListVal(ent, "age")){
                         if(ent.getTicksLived()>=config.getInt("AgeLimit")){
                             ent.remove();
@@ -128,7 +133,8 @@ public class MobAge extends JavaPlugin {
         
         boolean 
             mobage_ = cmd.getName().equalsIgnoreCase("mobage"),
-            mbwhitelist_ = cmd.getName().equalsIgnoreCase("mbwhitelist")
+            mwhitelist_ = cmd.getName().equalsIgnoreCase("mwhitelist"),
+            test = cmd.getName().equalsIgnoreCase("mbtest")
         ;
         
         String
@@ -136,6 +142,16 @@ public class MobAge extends JavaPlugin {
             perm_mobage_config = "mobage.config",
             perm_mobage_setconfig = "mobage.setconfig"
         ;
+        
+        if(test){
+            if(sender instanceof Player){
+                Location loc = ((Player) sender).getLocation();
+                config.set("TestLocation", loc);
+                sender.sendMessage("Put \""+loc+"\" in the config");
+                saveConfig();
+                reloadConfig();
+            }
+        }
         
         if(mobage_){ 
             
@@ -283,13 +299,9 @@ public class MobAge extends JavaPlugin {
             PluginIO.displayHelp(sender, "help");
         }
         
-        if(mbwhitelist){
+        if(mwhitelist_){
             try{
-                String arg1 = args[0];
-                String 
-                    path = "",
-                    
-                ;
+                String arg1 = args[0], path = "";
                 
                 boolean
                     age = arg1.equalsIgnoreCase("age"),
@@ -299,26 +311,28 @@ public class MobAge extends JavaPlugin {
                 try{
                     
                     String 
-                        arg2 = args[1],
-                        path = getWhitelistEntPath(arg2)
-                    ;
+                        arg2 = args[1];
+                    path = getWhitelistEntPath(arg2);
                     
                     if(path!=null){
                         try{
                             String arg3 = args[2];
                             
-                            if(age)setEntDoesAge(path);
-                            if(spawn)setEntDoesAge(path);
+                            if(age) setEntDoesAge(path, Boolean.parseBoolean(arg3));
+                            if(spawn) setEntDoesAge(path, Boolean.parseBoolean(arg3));
+                            
+                            sender.sendMessage("Sucess!");
+                            return true;
                             
                         }catch(IndexOutOfBoundsException e){
-                            sender.sendMessage(ChatColor.RED+"/mbwhitelist <age|spawn> <entityname> [true/false]")
+                            sender.sendMessage(ChatColor.RED+"/mbwhitelist <age|spawn> <entityname> [true/false]");
                         }
                     } else sender.sendMessage(ChatColor.RED+"Could not find the path \""+arg2+"\"");
                 }catch(IndexOutOfBoundsException e){
                     
                 }
             }catch(IndexOutOfBoundsException e){
-                
+                sender.sendMessage("/mwhitelist help");
             }
         }
         
@@ -346,7 +360,7 @@ public class MobAge extends JavaPlugin {
     public void setConfigVal(String path, boolean newvalue){
         config.set(path, newvalue);
         saveConfig();
-        loadconfig();
+        loadConfig();
     }
     
     public String getWhitelistEntPath(String entityname){

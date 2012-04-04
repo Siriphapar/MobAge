@@ -1,7 +1,7 @@
 name: MobAge
 main: me.acuddlyheadcrab.MobAge.MobAge
 author: "acuddlyheadcrab"
-version: 2.2.4
+version: 2.4.1
 startup: postworld
 permissions:
     mobage.*:
@@ -20,6 +20,14 @@ commands:
         description: "Displays help messages for MobAge"
         usage: /<command> <reload/config> [config key] [value]
         aliases: [mb]
+    mwhitelist:
+        description: "Edit MobAge's whitelist"
+        usage: /<command> <age|spawn> <entityname> [true/false]
+        aliases: [mwl]
+    mbtest:
+        description: "Edit MobAge's whitelist"
+        usage: /<command> <age|spawn> <entityname> [true/false]
+        aliases: [mbwl]
 description: >
              MobAge is a plugin that reduces the amount of stray/idle mobs around each world.
              

@@ -80,7 +80,7 @@ public class PluginIO{
 		}
 	} 
 	
-	public static void displayHelp(CommandSender cmdsndr, String option) {
+	public static void displayHelp(CommandSender sender, String option) {
 		config = MobAge.config;
 		
 		ChatColor 
@@ -91,33 +91,81 @@ public class PluginIO{
 	        red = ChatColor.RED
         ;
 		
-		if(option=="help"){
-			cmdsndr.sendMessage(gold+"MobAge v"+MobAge.pdf.getVersion());
-			cmdsndr.sendMessage(green+"   "+red+"/mobage"+green+" - Displays help");
-			cmdsndr.sendMessage(green+"   "+red+"/mobage reload"+green+" - Reloads config");
-			cmdsndr.sendMessage(green+"   "+red+"/mobage config"+green+" - Shows more help and current config stats");
-			cmdsndr.sendMessage(green+"   "+red+"/mobage setconfig"+green+" - Edit a specified key in the config");
+		if(option.equals("help")){
+			sender.sendMessage(gold+"MobAge v"+MobAge.pdf.getVersion());
+			sender.sendMessage(green+"   "+red+"/mobage"+green+" - Displays help");
+			sender.sendMessage(green+"   "+red+"/mobage reload"+green+" - Reloads config");
+			sender.sendMessage(green+"   "+red+"/mobage config"+green+" - Shows more help and current config stats");
+			sender.sendMessage(green+"   "+red+"/mobage setconfig"+green+" - Edit a specified key in the config");
 		}
-		if(option=="config"){
-			cmdsndr.sendMessage(gold+"MobAge config stats:");
-			cmdsndr.sendMessage(gray+"  Age Check Delay:  "+config.getInt("Age_Check_delay"));
-    		cmdsndr.sendMessage(gray+"  Age Limit: "+config.getInt("AgeLimit"));
-    		cmdsndr.sendMessage(gray+"  Mob limit: "+config.getInt("MobLimit"));
-    		cmdsndr.sendMessage(gray+"  Active radius: "+config.getInt("Active_Radius"));
-    		cmdsndr.sendMessage(gray+"  Whitelist enabled: "+whitelist.getBoolean("Whitelist.Enabled"));
-    		cmdsndr.sendMessage(gray+"  Debug(spawn): "+config.getBoolean("Debug_onSpawn"));
+		if(option.equals("config")){
+			sender.sendMessage(gold+"MobAge config stats:");
+			sender.sendMessage(gray+"  Age Check Delay:  "+config.getInt("Age_Check_delay"));
+    		sender.sendMessage(gray+"  Age Limit: "+config.getInt("AgeLimit"));
+    		sender.sendMessage(gray+"  Mob limit: "+config.getInt("MobLimit"));
+    		sender.sendMessage(gray+"  Active radius: "+config.getInt("Active_Radius"));
+    		sender.sendMessage(gray+"  Whitelist enabled: "+whitelist.getBoolean("Whitelist.Enabled"));
+    		sender.sendMessage(gray+"  Debug(spawn): "+config.getBoolean("Debug_onSpawn"));
 		}
-		if(option=="setconfig"){
-			cmdsndr.sendMessage(gold+"How to edit MobAge config :");
-			cmdsndr.sendMessage(gray+"  /mobage setconfig age_check_delay "+dgray+"<default: 0.5>");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig age_limit "+dgray+"<default: 45>");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig mob_limit "+dgray+"<default: 50>");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig active radius "+dgray+"<default: 50>");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig debug "+dgray+"true/false");
-    		cmdsndr.sendMessage(gray+"  /mobage setconfig whitelist "+dgray+"true/false");
-			
+		if(option.equals("setconfig")){
+			sender.sendMessage(gold+"How to edit MobAge config :");
+			sender.sendMessage(gray+"  /mobage setconfig age_check_delay "+dgray+"<default: 0.5>");
+    		sender.sendMessage(gray+"  /mobage setconfig age_limit "+dgray+"<default: 45>");
+    		sender.sendMessage(gray+"  /mobage setconfig mob_limit "+dgray+"<default: 50>");
+    		sender.sendMessage(gray+"  /mobage setconfig active radius "+dgray+"<default: 50>");
+    		sender.sendMessage(gray+"  /mobage setconfig debug "+dgray+"true/false");
+    		sender.sendMessage(gray+"  /mobage setconfig whitelist "+dgray+"true/false");
 		}
 		
+		if(option.equals("whitelist")){
+		    sender.sendMessage("WHITELIST:");
+            sender.sendMessage("  Can Spawn:");
+            sender.sendMessage("    MONSTERS:");
+            sender.sendMessage("        Blaze: "+getWLKey("Monsters", "Blaze", "spawn"));
+            sender.sendMessage("        Cavespider: "+getWLKey("Monsters", "CaveSpider", "spawn"));
+            sender.sendMessage("        Creeper: "+getWLKey("Monsters", "Creeper", "spawn"));
+            sender.sendMessage("        Enderman: "+getWLKey("Monsters", "Enderman", "spawn"));
+            sender.sendMessage("        Ghast: "+getWLKey("Monsters", "Ghast", "spawn"));
+            sender.sendMessage("        Giant: : "+getWLKey("Monsters", "Giant", "spawn"));
+            sender.sendMessage("        Magmacube: "+getWLKey("Monsters", "MagmaCube", "spawn"));
+            sender.sendMessage("        Pigzombie: "+getWLKey("Monsters", "PigZombie", "spawn"));
+            sender.sendMessage("        Silverfish: "+getWLKey("Monsters", "SilverFish", "spawn"));
+            sender.sendMessage("        Skeleton: "+getWLKey("Monsters", "Skeleton", "spawn"));
+            sender.sendMessage("        Spider: "+getWLKey("Monsters", "Spider", "spawn"));
+            sender.sendMessage("        Zombie: "+getWLKey("Monsters", "Zombie", "spawn"));
+            sender.sendMessage("    ANIMALS:");
+            sender.sendMessage("        Chicken: "+getWLKey("Animals", "Chicken", "spawn"));
+            sender.sendMessage("        Cow: "+getWLKey("Animals", "Cow", "spawn"));
+            sender.sendMessage("        Mooshroom: "+getWLKey("Animals", "Mooshroom", "spawn"));
+            sender.sendMessage("        Sheep: "+getWLKey("Animals", "Sheep", "spawn"));
+            sender.sendMessage("        Slime: "+getWLKey("Animals", "Slime", "spawn"));
+            sender.sendMessage("        Sqid: "+getWLKey("Animals", "Squid", "spawn"));
+            sender.sendMessage("        Villager: "+getWLKey("Animals", "Villager", "spawn"));
+            sender.sendMessage("        Wolf: "+getWLKey("Animals", "Wolf", "spawn"));
+            sender.sendMessage("  Does Age:");
+            sender.sendMessage("    MONSTERS:");
+            sender.sendMessage("        Blaze: "+getWLKey("Monsters", "Blaze", "age"));
+            sender.sendMessage("        Cavespider: "+getWLKey("Monsters", "CaveSpider", "age"));
+            sender.sendMessage("        Creeper: "+getWLKey("Monsters", "Creeper", "age"));
+            sender.sendMessage("        Enderman: "+getWLKey("Monsters", "Enderman", "age"));
+            sender.sendMessage("        Ghast: "+getWLKey("Monsters", "Ghast", "age"));
+            sender.sendMessage("        Giant: : "+getWLKey("Monsters", "Giant", "age"));
+            sender.sendMessage("        Magmacube: "+getWLKey("Monsters", "MagmaCube", "age"));
+            sender.sendMessage("        Pigzombie: "+getWLKey("Monsters", "PigZombie", "age"));
+            sender.sendMessage("        Silverfish: "+getWLKey("Monsters", "SilverFish", "age"));
+            sender.sendMessage("        Skeleton: "+getWLKey("Monsters", "Skeleton", "age"));
+            sender.sendMessage("        Spider: "+getWLKey("Monsters", "Spider", "age"));
+            sender.sendMessage("        Zombie: "+getWLKey("Monsters", "Zombie", "age"));
+            sender.sendMessage("    ANIMALS:");
+            sender.sendMessage("        Chicken: "+getWLKey("Animals", "Chicken", "age"));
+            sender.sendMessage("        Cow: "+getWLKey("Animals", "Cow", "age"));
+            sender.sendMessage("        Mooooshrooooom: "+getWLKey("Animals", "Mooshroom", "age"));
+            sender.sendMessage("        Sheep: "+getWLKey("Animals", "Sheep", "age"));
+            sender.sendMessage("        Slime: "+getWLKey("Animals", "Slime", "age"));
+            sender.sendMessage("        Sqid: "+getWLKey("Animals", "Squid", "age"));
+            sender.sendMessage("        Villager: "+getWLKey("Animals", "Villager", "age"));
+            sender.sendMessage("        Wolf: "+getWLKey("Animals", "Wolf", "age"));
+		}
 	}
 	
 	public static long toTicks(double seconds){

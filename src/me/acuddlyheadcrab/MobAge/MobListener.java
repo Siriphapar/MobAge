@@ -15,7 +15,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.yaml.snakeyaml.error.YAMLException;
 
 
@@ -62,7 +61,7 @@ public class MobListener implements Listener{
 		
 		boolean
 		    overMoblimit = (moblimit!=0)&&(l_entlist.size()>=moblimit),
-		    notInhab = !inhabited(event.getLocation()),
+		    notInhab = !inhabited(event.getLocation(), "onspawn"),
 		    whitelist = MobAge.whitelist.getBoolean("Whitelist.Enabled"),
 		    noSpawn = whitelist&&!PluginIO.getWhiteListVal(event.getEntity(), "spawn")
 	    ;
@@ -86,33 +85,11 @@ public class MobListener implements Listener{
 		}
 	}
 	
-
 	
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event){
-		
-		if(MobListener.eventDebug){System.out.println("dmg");}
-		
-		Entity[] ent_ar = event.getTo().getBlock().getChunk().getEntities();
-		
-		
-		
-		for(int c=0;c<ent_ar.length;c++){
-			Entity ent = ent_ar[c];
-			
-			if (!(ent instanceof Player)){
-				resetAge(ent, "PlayerMoveEvent");
-			}
-		}
-		
-	}
-	
-	private boolean inhabited(Location loc) {
+    public static boolean inhabited(Location loc, String reason) {
 		Player[] playarr = Bukkit.getOnlinePlayers();
 		double dist = 0;
 		int rad = 5;
-		
-		
 		try{
 			rad = MobAge.config.getInt("Active_Radius");
 		}catch(YAMLException e){PluginIO.sendPluginInfo("Exception in YML key: \"Active Radius:\""); return false;}
@@ -128,7 +105,7 @@ public class MobListener implements Listener{
 			if(dist<=rad){return true;}
 		}
 		
-		if(MobAge.config.getBoolean("Debug.onSpawn")){
+		if(MobAge.config.getBoolean("Debug.onSpawn")&&reason.equalsIgnoreCase("onspawn")){
 			PluginIO.sendPluginInfo("A location was deemed inactive, and spawn cancelled ("+(int) dist+"!<"+rad+")");
 		}
 		return false;
