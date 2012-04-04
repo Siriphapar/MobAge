@@ -51,7 +51,7 @@ public class MobAge extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        this.getServer().getScheduler().cancelTasks(this);
+        getServer().getScheduler().cancelTasks(this);
         PluginIO.sendPluginInfo("is now disabled :(");
     }
     
@@ -172,14 +172,14 @@ public class MobAge extends JavaPlugin {
                                 
                                 if(_age_check_delay){
                                     try{
-                                        config.set("Age_Check_delay", Double.parseDouble(arg3));
-                                        newv = config.getString("Age_Check_Delay");
-                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Age_check_delay\" with the value: "+ChatColor.GRAY+newv); 
+                                        config.set("Age_Check_delay", Double.parseDouble(arg3)); 
                                         saveConfig(); loadConfig();
+                                        newv = config.getString("Age_Check_Delay");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Age_check_delay\" with the value: "+ChatColor.GRAY+newv);
                                         return true;
                                     }
                                     catch (NumberFormatException e){
-                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        sender.sendMessage(ChatColor.RED+"\""+arg3+"\" could not be recognized as a valid number!");
                                         return true;
                                     }
                                 }
@@ -187,13 +187,13 @@ public class MobAge extends JavaPlugin {
                                 if(_age_limit){
                                     try{
                                         config.set("AgeLimit", Double.parseDouble(arg3));
+                                        saveConfig(); loadConfig();
                                         newv = config.getString("AgeLimit");
                                         sender.sendMessage(ChatColor.GOLD+"Set key \"AgeLimit\" with the value: "+ChatColor.GRAY+newv); 
-                                        saveConfig(); loadConfig();
                                         return true;
                                     }
                                     catch (NumberFormatException e){
-                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        sender.sendMessage(ChatColor.RED+"\""+arg3+"\" could not be recognized as a valid number!");
                                         return true;
                                     }
                                 }
@@ -201,41 +201,41 @@ public class MobAge extends JavaPlugin {
                                 if(_mob_limit){
                                     try{
                                         config.set("MobLimit", Double.parseDouble(arg3));
+                                        saveConfig(); loadConfig();
                                         newv = config.getString("MobLimit");
                                         sender.sendMessage(ChatColor.GOLD+"Set key \"MobLimit\" with the value: "+ChatColor.GRAY+newv); 
-                                        saveConfig(); loadConfig();
                                         return true;
                                     }
                                     catch (NumberFormatException e){
-                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        sender.sendMessage(ChatColor.RED+"\""+arg3+"\" could not be recognized as a valid number!");
                                         return true;
                                     }
                                 }
                                 
                                 if(_active_radius){
                                     try{
-                                        config.set("Active_Radius", Double.parseDouble(arg3));
-                                        newv = config.getString("Active_Radius");
-                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Active_Radius\" with the value: "+ChatColor.GRAY+newv); 
+                                        config.set("Active_Radius", Double.parseDouble(arg3)); 
                                         saveConfig(); loadConfig();
+                                        newv = config.getString("Active_Radius");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Active_Radius\" with the value: "+ChatColor.GRAY+newv);
                                         return true;
                                     }
                                     catch (NumberFormatException e){
-                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be recognized as a valid number!");
+                                        sender.sendMessage(ChatColor.RED+"\""+arg3+"\" could not be recognized as a valid number!");
                                         return true;
                                     }
                                 }
                                 
                                 if(_debug){
                                     try{
-                                        config.set("Debug.onSpawn", Boolean.parseBoolean(arg3));
-                                        newv = config.getString("Debug.onSpawn");
-                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Debug.onSpawn\" with the value: "+ChatColor.GRAY+newv); 
+                                        config.set("Debug.onSpawn", Boolean.parseBoolean(arg3)); 
                                         saveConfig(); loadConfig();
+                                        newv = config.getString("Debug.onSpawn");
+                                        sender.sendMessage(ChatColor.GOLD+"Set key \"Debug.onSpawn\" with the value: "+ChatColor.GRAY+newv);
                                         return true;
                                     }
                                     catch (Exception e){
-                                        sender.sendMessage(ChatColor.RED+"\""+arg2+"\" could not be parsed as a valid argument!");
+                                        sender.sendMessage(ChatColor.RED+"\""+arg3+"\" could not be parsed as a valid argument!");
                                         return true;
                                     }
                                 }
@@ -243,9 +243,9 @@ public class MobAge extends JavaPlugin {
                                 if(_whitelist){
                                     try{
                                         whitelist.set("Whitelist.Enabled", Boolean.parseBoolean(arg3));
+                                        saveWhitelist(); loadWhitelist();
                                         newv = whitelist.getString("Whitelist.Enabled");
                                         sender.sendMessage(ChatColor.GOLD+"Set key \"Whitelist.Enabled\" with the value: "+ChatColor.GRAY+newv);
-                                        saveWhitelist(); loadWhitelist();
                                         return true;
                                     }
                                     catch (Exception e){

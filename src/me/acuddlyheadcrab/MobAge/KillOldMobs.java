@@ -56,6 +56,7 @@ public class KillOldMobs implements Runnable {
                 }   
             }
         }
+        System.out.println("Removed entities");
         if(taskDebug){
             PluginIO.sendPluginInfo("Removed "+killcountall+" entities");
         }
